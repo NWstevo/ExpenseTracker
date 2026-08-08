@@ -12,8 +12,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material3.Button
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
@@ -22,6 +25,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,6 +39,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.expensetracker.app.camera.PhotoUtils
 import com.expensetracker.app.data.ExpenseCategory
+import com.expensetracker.app.util.DateUtils
 import com.expensetracker.app.viewmodel.ExpenseViewModel
 import java.io.File
 
@@ -46,6 +52,8 @@ fun AddExpenseScreen(viewModel: ExpenseViewModel, onSaved: () -> Unit) {
     var note by rememberSaveable { mutableStateOf("") }
     var category by rememberSaveable { mutableStateOf(ExpenseCategory.OTHER) }
     var categoryMenuExpanded by remember { mutableStateOf(false) }
+    var dateMillis by rememberSaveable { mutableStateOf(DateUtils.nowMillis()) }
+    var showDatePicker by remember { mutableStateOf(false) }
 
     var pendingPhotoFile by remember { mutableStateOf<File?>(null) }
     var savedPhotoPath by remember { mutableStateOf<String?>(null) }
@@ -107,6 +115,19 @@ fun AddExpenseScreen(viewModel: ExpenseViewModel, onSaved: () -> Unit) {
         }
 
         OutlinedTextField(
+            value = DateUtils.formatDate(dateMillis),
+            onValueChange = {},
+            readOnly = true,
+            label = { Text("Date of purchase") },
+            trailingIcon = {
+                androidx.compose.material3.IconButton(onClick = { showDatePicker = true }) {
+                    androidx.compose.material3.Icon(Icons.Filled.CalendarToday, contentDescription = "Pick date")
+                }
+            },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        OutlinedTextField(
             value = note,
             onValueChange = { note = it },
             label = { Text("Note (optional)") },
@@ -143,7 +164,8 @@ fun AddExpenseScreen(viewModel: ExpenseViewModel, onSaved: () -> Unit) {
                     amount = amount!!,
                     category = category,
                     note = note.trim(),
-                    photoPath = savedPhotoPath
+                    photoPath = savedPhotoPath,
+                    dateMillis = dateMillis
                 )
                 onSaved()
             },
@@ -151,6 +173,24 @@ fun AddExpenseScreen(viewModel: ExpenseViewModel, onSaved: () -> Unit) {
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Save Expense")
+        }
+    }
+
+    if (showDatePicker) {
+        val datePickerState = rememberDatePickerState(initialSelectedDateMillis = dateMillis)
+        DatePickerDialog(
+            onDismissRequest = { showDatePicker = false },
+            confirmButton = {
+                TextButton(onClick = {
+                    datePickerState.selectedDateMillis?.let { dateMillis = DateUtils.fromPickerUtcMillis(it) }
+                    showDatePicker = false
+                }) { Text("OK") }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDatePicker = false }) { Text("Cancel") }
+            }
+        ) {
+            DatePicker(state = datePickerState)
         }
     }
 }

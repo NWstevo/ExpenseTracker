@@ -16,7 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.expensetracker.app.ui.components.BudgetProgressCard
 import com.expensetracker.app.ui.components.CategoryBreakdown
-import com.expensetracker.app.ui.components.ExpenseListItem
+import com.expensetracker.app.ui.components.ExpenseTableHeader
+import com.expensetracker.app.ui.components.ExpenseTableRow
 import com.expensetracker.app.viewmodel.ExpenseViewModel
 
 @Composable
@@ -47,8 +48,9 @@ fun DashboardScreen(viewModel: ExpenseViewModel) {
         if (allExpenses.isEmpty()) {
             item { Text("Nothing recorded yet. Tap + to add your first expense.") }
         } else {
-            items(allExpenses.take(5)) { expense ->
-                ExpenseListItem(expense = expense, onDelete = { viewModel.deleteExpense(expense) })
+            item { ExpenseTableHeader() }
+            items(allExpenses.take(5), key = { it.id }) { expense ->
+                ExpenseTableRow(expense = expense, onDelete = { viewModel.deleteExpense(expense) })
             }
         }
     }

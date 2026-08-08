@@ -74,14 +74,14 @@ class ExpenseViewModel(application: Application) : AndroidViewModel(application)
         overdraftAllowance = b.overdraftAllowance
     )
 
-    fun addExpense(amount: Double, category: ExpenseCategory, note: String, photoPath: String?) {
+    fun addExpense(amount: Double, category: ExpenseCategory, note: String, photoPath: String?, dateMillis: Long = DateUtils.nowMillis()) {
         viewModelScope.launch {
             repository.addExpense(
                 Expense(
                     amount = amount,
                     category = category,
                     note = note,
-                    dateMillis = DateUtils.nowMillis(),
+                    dateMillis = dateMillis,
                     photoPath = photoPath
                 )
             )

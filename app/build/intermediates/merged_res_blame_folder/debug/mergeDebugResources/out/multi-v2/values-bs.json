@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.expensetracker.app-mergeDebugResources-55:/values-bs/values-bs.xml",
+            "outputFile": "com.expensetracker.app-mergeDebugResources-60:/values-bs/values-bs.xml",
             "map": [
                 {
                     "source": "/Users/mac/.gradle/caches/transforms-4/59e18a4f9acdb5c1fe77aa168ef15646/transformed/core-1.13.1/res/values-bs/values-bs.xml",

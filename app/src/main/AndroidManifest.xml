@@ -7,6 +7,8 @@
          takes the picture and hands the file back to us. -->
     <uses-feature android:name="android.hardware.camera.any" android:required="false" />
 
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"

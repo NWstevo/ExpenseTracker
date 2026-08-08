@@ -5,6 +5,7 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZoneId
+import java.time.ZoneOffset
 import java.time.temporal.TemporalAdjusters
 
 /**
@@ -42,4 +43,12 @@ object DateUtils {
     }
 
     fun nowMillis(): Long = System.currentTimeMillis()
+
+    // Material3's DatePicker reports the selected day as UTC midnight
+    // regardless of device time zone. Re-anchor that day to the current
+    // time-of-day in the device's zone so it sorts/behaves like any other
+    // expense timestamp.
+    fun fromPickerUtcMillis(pickerUtcMillis: Long): Long =
+        Instant.ofEpochMilli(pickerUtcMillis).atZone(ZoneOffset.UTC).toLocalDate()
+            .atTime(LocalTime.now()).atZone(zone).toInstant().toEpochMilli()
 }
