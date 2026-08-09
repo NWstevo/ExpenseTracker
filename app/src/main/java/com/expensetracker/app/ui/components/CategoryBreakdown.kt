@@ -15,8 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.expensetracker.app.data.CategoryTotal
+import com.expensetracker.app.ui.LocalCurrency
 import com.expensetracker.app.ui.theme.GreenPrimary
-import java.util.Locale
 
 /** Simple horizontal-bar breakdown by category — no charting library needed. */
 @Composable
@@ -25,6 +25,7 @@ fun CategoryBreakdown(totals: List<CategoryTotal>, modifier: Modifier = Modifier
         Text("No expenses recorded yet for this period.", style = MaterialTheme.typography.bodyMedium, modifier = modifier)
         return
     }
+    val currency = LocalCurrency.current
     val max = totals.maxOf { it.total }.coerceAtLeast(0.01)
     Column(modifier = modifier.fillMaxWidth()) {
         totals.sortedByDescending { it.total }.forEach { ct ->
@@ -43,7 +44,7 @@ fun CategoryBreakdown(totals: List<CategoryTotal>, modifier: Modifier = Modifier
                     .background(GreenPrimary)
             )
             Text(
-                "$" + String.format(Locale.US, "%.2f", ct.total),
+                currency.format(ct.total),
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.padding(bottom = 8.dp)
             )

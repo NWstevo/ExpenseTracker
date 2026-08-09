@@ -39,6 +39,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.expensetracker.app.camera.PhotoUtils
 import com.expensetracker.app.data.ExpenseCategory
+import com.expensetracker.app.ui.LocalCurrency
 import com.expensetracker.app.util.DateUtils
 import com.expensetracker.app.viewmodel.ExpenseViewModel
 import java.io.File
@@ -47,6 +48,7 @@ import java.io.File
 @Composable
 fun AddExpenseScreen(viewModel: ExpenseViewModel, onSaved: () -> Unit) {
     val context = LocalContext.current
+    val currency = LocalCurrency.current
 
     var amountText by rememberSaveable { mutableStateOf("") }
     var note by rememberSaveable { mutableStateOf("") }
@@ -83,7 +85,9 @@ fun AddExpenseScreen(viewModel: ExpenseViewModel, onSaved: () -> Unit) {
             label = { Text("Amount") },
             singleLine = true,
             modifier = Modifier.fillMaxWidth(),
-            isError = amountText.isNotEmpty() && !isValid
+            isError = amountText.isNotEmpty() && !isValid,
+            prefix = if (currency.prefixed) { { Text(currency.symbol) } } else null,
+            suffix = if (!currency.prefixed) { { Text(currency.symbol) } } else null
         )
 
         ExposedDropdownMenuBox(

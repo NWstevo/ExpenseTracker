@@ -20,13 +20,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.expensetracker.app.ui.LocalCurrency
 import com.expensetracker.app.ui.theme.AmberWarning
 import com.expensetracker.app.ui.theme.GreenPrimary
 import com.expensetracker.app.ui.theme.OrangeOverLimit
 import com.expensetracker.app.ui.theme.RedOverdraft
 import com.expensetracker.app.util.BudgetLevel
 import com.expensetracker.app.util.BudgetStatus
-import java.util.Locale
 
 fun BudgetLevel.color(): Color = when (this) {
     BudgetLevel.SAFE -> GreenPrimary
@@ -42,10 +42,11 @@ fun BudgetLevel.message(): String = when (this) {
     BudgetLevel.OVERDRAFT_EXCEEDED -> "Overdraft allowance exceeded"
 }
 
-private fun money(v: Double) = "$" + String.format(Locale.US, "%.2f", v)
-
 @Composable
 fun BudgetProgressCard(title: String, status: BudgetStatus, modifier: Modifier = Modifier) {
+    val currency = LocalCurrency.current
+    fun money(v: Double) = currency.format(v)
+
     Card(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),

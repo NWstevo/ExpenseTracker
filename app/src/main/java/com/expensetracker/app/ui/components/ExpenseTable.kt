@@ -21,19 +21,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.expensetracker.app.data.Expense
+import com.expensetracker.app.ui.LocalCurrency
 import com.expensetracker.app.util.DateUtils
-import java.util.Locale
 
 private val dateWeight = 1f
 private val categoryWeight = 1.1f
 private val amountWeight = 0.9f
 
-private fun money(v: Double) = "$" + String.format(Locale.US, "%.2f", v)
-
 private fun displayName(name: String) = name.lowercase().replaceFirstChar { it.uppercase() }
 
 @Composable
 fun ExpenseTableHeader(modifier: Modifier = Modifier) {
+    val currency = LocalCurrency.current
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -42,7 +41,7 @@ fun ExpenseTableHeader(modifier: Modifier = Modifier) {
         Text("Date", modifier = Modifier.weight(dateWeight), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold)
         Text("Category", modifier = Modifier.weight(categoryWeight), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold)
         Text(
-            "Amount",
+            "Amount (${currency.symbol})",
             modifier = Modifier.weight(amountWeight),
             style = MaterialTheme.typography.labelLarge,
             fontWeight = FontWeight.Bold,
@@ -55,6 +54,7 @@ fun ExpenseTableHeader(modifier: Modifier = Modifier) {
 
 @Composable
 fun ExpenseTableRow(expense: Expense, onDelete: () -> Unit, modifier: Modifier = Modifier) {
+    val currency = LocalCurrency.current
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -84,7 +84,7 @@ fun ExpenseTableRow(expense: Expense, onDelete: () -> Unit, modifier: Modifier =
             }
         }
         Text(
-            money(expense.amount),
+            currency.format(expense.amount),
             modifier = Modifier.weight(amountWeight),
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.End

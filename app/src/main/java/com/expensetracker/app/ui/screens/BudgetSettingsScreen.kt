@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.expensetracker.app.ui.LocalCurrency
 import com.expensetracker.app.ui.theme.GreenPrimary
 import com.expensetracker.app.viewmodel.ExpenseViewModel
 import kotlinx.coroutines.delay
@@ -33,6 +34,7 @@ import kotlinx.coroutines.delay
 @Composable
 fun BudgetSettingsScreen(viewModel: ExpenseViewModel) {
     val budget by viewModel.budget.collectAsState()
+    val currency = LocalCurrency.current
 
     var weekly by remember { mutableStateOf(budget.weeklyLimit.toString()) }
     var monthly by remember { mutableStateOf(budget.monthlyLimit.toString()) }
@@ -80,7 +82,9 @@ fun BudgetSettingsScreen(viewModel: ExpenseViewModel) {
             onValueChange = { weekly = it },
             label = { Text("Weekly budget") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            prefix = if (currency.prefixed) { { Text(currency.symbol) } } else null,
+            suffix = if (!currency.prefixed) { { Text(currency.symbol) } } else null
         )
 
         OutlinedTextField(
@@ -88,7 +92,9 @@ fun BudgetSettingsScreen(viewModel: ExpenseViewModel) {
             onValueChange = { monthly = it },
             label = { Text("Monthly budget") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            prefix = if (currency.prefixed) { { Text(currency.symbol) } } else null,
+            suffix = if (!currency.prefixed) { { Text(currency.symbol) } } else null
         )
 
         OutlinedTextField(
@@ -104,7 +110,9 @@ fun BudgetSettingsScreen(viewModel: ExpenseViewModel) {
             onValueChange = { overdraft = it },
             label = { Text("Overdraft allowance (amount past budget)") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            prefix = if (currency.prefixed) { { Text(currency.symbol) } } else null,
+            suffix = if (!currency.prefixed) { { Text(currency.symbol) } } else null
         )
 
         Button(
